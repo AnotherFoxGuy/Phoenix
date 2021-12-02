@@ -1,0 +1,26 @@
+name: PIP packages
+on:
+  push:
+    branches: [pip]
+
+jobs:
+  windows:
+    runs-on: windows-2019
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: ilammy/msvc-dev-cmd@v1
+        with:
+          toolset: 14.1
+
+      - uses: actions/setup-python@v2
+      - name: Build
+        run: |
+          pip install setuptools wheel
+          pip wheel . --verbose
+
+      - name: Upload
+        uses: actions/upload-artifact@v2
+        with:
+          name: wheel-win
+          path: "*.whl"
