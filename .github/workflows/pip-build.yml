@@ -14,10 +14,29 @@ jobs:
           toolset: 14.1
 
       - uses: actions/setup-python@v2
-      - name: Build
+
+      - name: "Install Python dependencies"
         run: |
-          pip install setuptools wheel
-          pip wheel . --verbose
+          pip install -U setuptools wheel
+          pip install -r requirements.txt
+
+      - name: "build wxWidgets"
+        run: |
+          python build.py --jobs=4 build_wx
+
+      - name: "generate code"
+        run: |
+          python build.py dox etg --nodoc sip
+
+      - name: "build wxPython"
+        run: |
+          python build.py --jobs=4 build_py
+
+      - name: "build wheel and test install"
+        run: |
+          python build.py bdist_wheel
+          python build.py install
+          python -c "import wx; print(wx.version());"
 
       - name: Upload
         uses: actions/upload-artifact@v2
