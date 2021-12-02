@@ -3,6 +3,10 @@ on:
   push:
     branches: [pip]
 
+defaults:
+  run:
+    shell: bash
+
 jobs:
   windows:
     runs-on: windows-2019
